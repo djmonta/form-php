@@ -187,7 +187,7 @@ class Form {
 		else
 			$mail_to = $data[$arg['to']];
 
-		return @mb_send_mail($mail_to, $subject, $body, $header);
+		return @mb_send_mail($mail_to, $arg['subject'], $body, $header);
 	}
 
 	private function remove_line_feeds($str) {
