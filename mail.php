@@ -36,26 +36,24 @@ $cf->add('message')->maxlen(1000);
 /*  Send Email
 -----------------------------------------------*/
 $cf->submit(array(
-		'from' => 'Contact <contact@example.com>',
-		'bcc' => 'contact@example.com',
+		'from' => '{{name}} <{{email}}>',
+		//'bcc' => 'contact@example.com',
 		'to' => 'sachiko.miyamoto@gmail.com',
 		'subject' => 'Contact',
 		'body' => '
 ----------------------------------------
-Timestamp: {{DATE}}
+日時: {{DATE}}
 ----------------------------------------
-Name: {{name}}
+お名前: {{name}}
 ----------------------------------------
-Email: {{email}}
+メールアドレス: {{email}}
 ----------------------------------------
-Birthdate: {{birthdate}}
+ご希望のメニュー: {{menu&}}
 ----------------------------------------
-Gender: {{gender}}
+作りたいサイトの種類:
+{{kind+}}
 ----------------------------------------
-Colors:
-{{color+}}
-----------------------------------------
-Message:
+ご要望・ご質問など:
 {{message}}
 ----------------------------------------
 ',
