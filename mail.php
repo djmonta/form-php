@@ -3,7 +3,7 @@ require_once 'Form.php';
 $cf = new Form(array(
 		'prefix' => 'cf',
 		//'ajax'   => true,
-		// 'mail'   => true,
+		'mail'   => true,
 		'nonce'  => '3AYBpaa3ZyVHPaz9',
 ));
 
@@ -36,13 +36,13 @@ $cf->add('message')->maxlen(1000);
 /*  Send Email
 -----------------------------------------------*/
 $cf->submit(array(
-		'from' => '{{name}} <{{email}}>',
+		'from' => 'Contact <contact@single-web.site>',
 		//'bcc' => 'contact@example.com',
 		'to' => 'sachiko.miyamoto@gmail.com',
 		'subject' => 'Contact',
 		'body' => '
 ----------------------------------------
-日時: {{DATE}}
+日時: {{DATE}} {{TIME}}
 ----------------------------------------
 お名前: {{name}}
 ----------------------------------------

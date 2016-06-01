@@ -7,6 +7,7 @@
  */
 
 mb_language('ja');
+mb_internal_encoding('UTF-8');
 session_start();
 
 if (!defined('CAPTCHA_SCRIPT'))
@@ -111,7 +112,8 @@ class Form {
 				$res = array();
 
 				foreach ($validator->value as $val) {
-					$res[] = $validator->meta['option'][$val - 1];
+					// $res[] = $validator->meta['option'][$val - 1];
+					$res[] = $validator->meta['option'][$val];
 				}
 
 				if ($flatten)
@@ -119,7 +121,8 @@ class Form {
 
 				$data[$name] = $res;
 			} elseif (isset($validator->meta['option'])) {
-				$data[$name] = $validator->meta['option'][$validator->value - 1];
+				// $data[$name] = $validator->meta['option'][$validator->value - 1];
+				$data[$name] = $validator->meta['option'][$validator->value];
 			} else {
 				$data[$name] = $validator->value;
 			}
