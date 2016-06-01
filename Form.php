@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Form.php
  *
@@ -571,6 +570,7 @@ class Form_Html {
 			'type' => $info['type'] ? $info['type'] : 'text',
 			'name' => $info['name'],
 			'id'   => $info['id'],
+			'required' => $info['required'] ? true : false,
 		) + $attrs);
 	}
 	public function textarea($name, $attrs = array()) {
@@ -579,6 +579,7 @@ class Form_Html {
 		echo $this->builder('textarea', array(
 			'name' => $info['name'],
 			'id'   => $info['id'],
+			'required' => $info['required'] ? true : false,
 		) + $attrs, '');
 	}
 
@@ -586,14 +587,15 @@ class Form_Html {
 		$info = $this->get_info($name);
 
 		for ($i = 0, $len = sizeof($info['option']); $i < $len; $i++) {
-			echo '<li><label>';
+			echo '';
 			echo $this->builder('input', array(
 				'type'  => $info['type'],
 				'name'  => $info['name'],
+				'id'    => $info['name'] . '-' . $i,
 				'value' => $i
 			) + $attrs);
-			echo ' ', $info['option'][$i];
-			echo '</label></li>';
+			echo '<label for="'.$info['name'] . '-' . $i.'">', $info['option'][$i];
+			echo '</label>';
 		}
 	}
 	public function select($name, $attrs = array()) {
@@ -684,6 +686,3 @@ function validation_filter_datetime($call, $val, $format = '') {
 	if ('format' == $call)
 		return $p;
 }
-
-
-
