@@ -363,8 +363,8 @@ class Form_Validator {
 	/*	Low level rules
 	-----------------------------------------------*/
 	public function required($bool) {
-		if ($this->interrupt())
-			return $this;
+		// if ($this->interrupt())
+		// 	return $this;
 
 		$this->meta['required'] = $bool;
 
@@ -570,7 +570,7 @@ class Form_Html {
 			'type' => $info['type'] ? $info['type'] : 'text',
 			'name' => $info['name'],
 			'id'   => $info['id'],
-			'required' => $info['required'] ? true : false,
+			'required' => $info['required'],
 		) + $attrs);
 	}
 	public function textarea($name, $attrs = array()) {
@@ -579,7 +579,7 @@ class Form_Html {
 		echo $this->builder('textarea', array(
 			'name' => $info['name'],
 			'id'   => $info['id'],
-			'required' => $info['required'] ? true : false,
+			'required' => $info['required'],
 		) + $attrs, '');
 	}
 
@@ -592,6 +592,7 @@ class Form_Html {
 				'type'  => $info['type'],
 				'name'  => $info['name'],
 				'id'    => $info['name'] . '-' . $i,
+				'checked' => (isset($info['default']) && $i === $info['default']),
 				'value' => $i
 			) + $attrs);
 			echo '<label for="'.$info['name'] . '-' . $i.'">', $info['option'][$i];

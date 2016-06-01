@@ -30,7 +30,7 @@ include_once 'mail.php';
 				<label>ご希望のメニュー</label><span class="req">必須</span>
 			</div>
 			<div class="pure-u-3-4">
-				<?php $cf->html->option('menu'); ?>
+				<?php $cf->html->option('menu&'); ?>
 			</div>
 			<div class="pure-u-1-4">
 				<label>作りたいサイトの種類</label>
@@ -59,7 +59,8 @@ include_once 'mail.php';
 				data : { _ajax_call: '1' },
 				dataType : 'json',
 				beforeSubmit : showRequest,
-				success : showResponse
+				success : showResponse,
+				clearForm : true,
 			};
 			$('#cf').ajaxForm(options);
 		});
@@ -67,19 +68,26 @@ include_once 'mail.php';
 			//debugger;
 			var queryString = $.param(formData);
 			console.log('About to submit: \n' + queryString + '\n');
+
+			// TODO: display the progress view
+			$('.submit_button').text('送信中').attr('type', 'button').addClass('pure-button-disabled');
 			return true;
 		};
 		function showResponse(response, status, xhr, $form) {
 			console.log('response:' + JSON.stringify(response) + '\nstatus:' + status);
 
 			if (response.processed == true) {
-				alert('success');
+				// TODO: show succeeded message
+				$('.submit_button').text('完了');
+
 				return true;
 			} else if (response.error_count > 0) {
 				alert('data error');
 				// {"processed":false,"error_message":{"name":"required","email":"required"},"error_count":2}
 				$.each(response.error_message, function(){
-					console.log(this);
+					console.log(JSON.stringify(this));
+					// TODO: show error message
+
 				});
 
 			} else {

@@ -829,7 +829,7 @@ h1 {
 	}
 }
 @media (max-width: 48em) {
-	
+
 }
 @media screen and (max-width: 767px) {
 	.pcfixed { display: none;}
@@ -837,4 +837,3 @@ h1 {
 		padding-top: 120px;
 	}
 }
-

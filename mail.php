@@ -13,11 +13,11 @@ $cf->add('name', true)->maxlen(50);
 
 $cf->add('email', true)->type('email');
 
-$cf->add('menu')->set_option(array(
+$cf->add('menu&')->set_option(array(
 	'デザインパック',
 	'おまかせパック',
 	'相談して決めたい',
-));
+))->set_val(0);
 
 $cf->add('kind+')->set_option(array(
 	'個人事業',
