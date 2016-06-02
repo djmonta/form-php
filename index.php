@@ -144,8 +144,8 @@ include_once 'mail.php';
 
 		function beforeSubmit(formData, jqForm, options) {
 			//debugger;
-			//var queryString = $.param(formData);
-			//console.log('About to submit: \n' + queryString + '\n');
+			var queryString = $.param(formData);
+			console.log('About to submit: \n' + queryString + '\n');
 
 			console.log(mail_options.data);
 
