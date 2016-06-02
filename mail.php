@@ -1,25 +1,26 @@
 <?php
 require_once 'Form.php';
-$cf = new Form(array(
-		'prefix' => 'cf',
+$mail = new Form(array(
+		'prefix' => 'mail',
 		//'ajax'   => true,
 		'mail'   => true,
-		'nonce'  => '3AYBpaa3ZyVHPaz9',
+		'confirm' => false,
+		'nonce'  => 'wF)3QdE8N8jowLDU',
 ));
 
 /*  Validation Rules
 -----------------------------------------------*/
-$cf->add('name', true)->maxlen(50);
+$mail->add('name', true)->maxlen(50);
 
-$cf->add('email', true)->type('email');
+$mail->add('email', true)->type('email');
 
-$cf->add('menu&')->set_option(array(
+$mail->add('menu&')->set_option(array(
 	'デザインパック',
 	'おまかせパック',
 	'相談して決めたい',
 ))->set_val(0);
 
-$cf->add('kind+')->set_option(array(
+$mail->add('kind+')->set_option(array(
 	'個人事業',
 	'個人商店',
 	'クリニック・調剤薬局',
@@ -31,13 +32,13 @@ $cf->add('kind+')->set_option(array(
 	'その他',
 ));
 
-$cf->add('message')->maxlen(1000);
+$mail->add('message')->maxlen(2000);
 
 /*  Send Email
 -----------------------------------------------*/
-$cf->submit(array(
+$mail->submit(array(
 		'from' => 'Contact <contact@single-web.site>',
-		//'bcc' => 'contact@example.com',
+		'bcc' => '{{email}}',
 		'to' => 'sachiko.miyamoto@gmail.com',
 		'subject' => 'Contact',
 		'body' => '

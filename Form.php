@@ -22,6 +22,7 @@ class Form {
 			'prefix'      => 'form',
 			'ajax'        => true,
 			'mail'        => false,
+			'confirm'     => true,
 			'date_format' => 'Y/m/d',
 			'time_format' => 'H:i:s',
 			'nonce'       => '',
@@ -31,6 +32,8 @@ class Form {
 			'processed'     => false,
 			'error_message' => array(),
 			'error_count'   => 0,
+			'body'          => array(),
+			'data'          => array(),
 		);
 
 		$this->config     = $config;
@@ -82,6 +85,55 @@ class Form {
 			'processed' => $processed,
 			'error_message' => $error,
 			'error_count' => $error_count,
+			'data' => $this->get_data(false),
+		);
+
+		$this->post_process();
+	}
+
+	public function confirm($arg = null) {
+		if (!$this->called)
+			return;
+
+		$error = array();
+		$processed = true;
+		$error_count = 0;
+
+		foreach ($this->validators as $name => $validator) {
+			if (!$validator->is_valid()) {
+				$error[$name] = $validator->error;
+				$error_count++;
+			} elseif ($validator->meta['required']) {
+				$error[$name] = 'valid';
+			}
+		}
+
+		if ($error_count > 0)
+			$processed = false;
+		else
+			$processed &= $this->save($arg);
+
+		if ($processed) {
+			$body = $arg['body'];
+			$data = $this->get_data(true);
+
+			if ($this->config['confirm']) {
+				foreach ($data as $key => $value) {
+					$body = str_replace('{{' . $key . '}}', $value, $body);
+				}
+				$body = preg_replace('|{{[\w\-\+\&]+}}|u', '', $body);
+				$body = trim($body);
+				$body = strip_tags($body);
+				//$body = wordwrap($body, 70);
+			}
+		}
+
+		$this->last_status = array(
+			'processed' => $processed,
+			'error_message' => $error,
+			'error_count' => $error_count,
+			'body' => $body,
+			'data' => $this->get_data(false),
 		);
 
 		$this->post_process();
@@ -158,6 +210,7 @@ class Form {
 
 		foreach ($data as $key => $value) {
 			$body = str_replace('{{' . $key . '}}', $value, $body);
+			$bcc = str_replace('{{' . $key . '}}', $value, $arg['bcc']);
 		}
 
 		$body = preg_replace('|{{[\w\-\+\&]+}}|u', '', $body);
@@ -172,7 +225,7 @@ class Form {
 			$header[] = 'Cc: ' . $arg['cc'];
 
 		if ($arg['bcc'])
-			$header[] = 'Bcc: ' . $arg['bcc'];
+			$header[] = 'Bcc: ' . $bcc;
 
 		if ($arg['reply'])
 			$header[] = 'Reply-To: ' . $arg['reply'];
@@ -187,7 +240,8 @@ class Form {
 		else
 			$mail_to = $data[$arg['to']];
 
-		return @mb_send_mail($mail_to, $arg['subject'], $body, $header);
+		return true;
+		//return @mb_send_mail($mail_to, $arg['subject'], $body, $header);
 	}
 
 	private function remove_line_feeds($str) {
@@ -590,7 +644,7 @@ class Form_Html {
 		$info = $this->get_info($name);
 
 		for ($i = 0, $len = sizeof($info['option']); $i < $len; $i++) {
-			echo '';
+			echo '<li>';
 			echo $this->builder('input', array(
 				'type'  => $info['type'],
 				'name'  => $info['name'],
@@ -599,7 +653,7 @@ class Form_Html {
 				'value' => $i
 			) + $attrs);
 			echo '<label for="'.$info['name'] . '-' . $i.'">', $info['option'][$i];
-			echo '</label>';
+			echo '</label></li>';
 		}
 	}
 	public function select($name, $attrs = array()) {
