@@ -151,8 +151,8 @@ class Form {
 	}
 
 	public function get_data($flatten = false) {
-		if ($this->last_data)
-			return $this->last_data;
+		// if ($this->last_data)
+		// 	return $this->last_data;
 
 		$data = array();
 
@@ -168,13 +168,19 @@ class Form {
 					$res[] = $validator->meta['option'][$val];
 				}
 
-				if ($flatten)
+				if ($flatten) {
 					$res = implode("\n", $res);
-
-				$data[$name] = $res;
+					$data[$name] = $res;
+				} else {
+					$data[$name] = $validator->value;
+				}
 			} elseif (isset($validator->meta['option'])) {
+				if($flatten) {
 				// $data[$name] = $validator->meta['option'][$validator->value - 1];
-				$data[$name] = $validator->meta['option'][$validator->value];
+					$data[$name] = $validator->meta['option'][$validator->value];
+				} else {
+					$data[$name] = $validator->value;
+				}
 			} else {
 				$data[$name] = $validator->value;
 			}

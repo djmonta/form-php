@@ -81,7 +81,7 @@ include_once 'mail.php';
 			if (response.processed == true) {
 				//$('.confirm_button').text('完了');
 				//$('.submit_button').after('<p>お問い合わせありがとうございました</p>');
-				console.log(response);
+				//console.log(response);
 				var result = response.body.replace(/^(.+): ?(.+)?$/gm, '<label>$1</label>$2<br>');
 				//$('.moda-body').append(result.replace(/\n/g, '<br>'));
 				$('#confirm').on('show.bs.modal', function (event) {
@@ -99,9 +99,10 @@ include_once 'mail.php';
 				last_data = response.data;
 				var key;
 				$.each(last_data, function(index, value) {
-					key = index.replace(/([\w&+]+)/g, 'mail-$1');
+					key = index.replace(/([\w&+]+)/g, 'mail-$1').replace('&', '');
 					form_data[key] = value;
 				});
+				console.log(form_data);
 				return true;
 			} else if (response.error_count > 0) {
 				alert('フォームのエラーがあります');
@@ -139,14 +140,13 @@ include_once 'mail.php';
 			success : success,
 			url : 'mail.php',
 		};
-		$.extend(mail_options.data, form_data);
 		$('#mail').ajaxForm(mail_options);
 
 		function beforeSubmit(formData, jqForm, options) {
 			//debugger;
-			var queryString = $.param(formData);
-			console.log('About to submit: \n' + queryString + '\n');
-
+			//var queryString = $.param(formData);
+			//console.log('About to submit: \n' + queryString + '\n');
+			$.extend(mail_options.data, form_data);
 			console.log(mail_options.data);
 
 			$('.submit_button').text('送信中').attr('type', 'button').addClass('pure-button-disabled');
