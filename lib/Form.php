@@ -22,7 +22,7 @@ class Form {
 			'prefix'      => 'form',
 			'ajax'        => true,
 			'mail'        => false,
-			'confirm'     => true,
+			'auto_reply'  => false,
 			'date_format' => 'Y/m/d',
 			'time_format' => 'H:i:s',
 			'nonce'       => '',
@@ -33,7 +33,6 @@ class Form {
 			'error_message' => array(),
 			'error_count'   => 0,
 			'body'          => array(),
-			'data'          => array(),
 		);
 
 		$this->config     = $config;
@@ -78,6 +77,19 @@ class Form {
 		else
 			$processed &= $this->save($arg);
 
+		if ($processed) {
+			$body = $arg['body'];
+			$data = $this->get_data(true);
+
+			foreach ($data as $key => $value) {
+				$body = str_replace('{{' . $key . '}}', $value, $body);
+			}
+			$body = preg_replace('|{{[\w\-\+\&]+}}|u', '', $body);
+			$body = trim($body);
+			$body = strip_tags($body);
+			//$body = wordwrap($body, 70);
+		}
+
 		if ($processed && $this->config['mail'])
 			$processed &= $this->send($arg);
 
@@ -85,55 +97,7 @@ class Form {
 			'processed' => $processed,
 			'error_message' => $error,
 			'error_count' => $error_count,
-			'data' => $this->get_data(false),
-		);
-
-		$this->post_process();
-	}
-
-	public function confirm($arg = null) {
-		if (!$this->called)
-			return;
-
-		$error = array();
-		$processed = true;
-		$error_count = 0;
-
-		foreach ($this->validators as $name => $validator) {
-			if (!$validator->is_valid()) {
-				$error[$name] = $validator->error;
-				$error_count++;
-			} elseif ($validator->meta['required']) {
-				$error[$name] = 'valid';
-			}
-		}
-
-		if ($error_count > 0)
-			$processed = false;
-		else
-			$processed &= $this->save($arg);
-
-		if ($processed) {
-			$body = $arg['body'];
-			$data = $this->get_data(true);
-
-			if ($this->config['confirm']) {
-				foreach ($data as $key => $value) {
-					$body = str_replace('{{' . $key . '}}', $value, $body);
-				}
-				$body = preg_replace('|{{[\w\-\+\&]+}}|u', '', $body);
-				$body = trim($body);
-				$body = strip_tags($body);
-				//$body = wordwrap($body, 70);
-			}
-		}
-
-		$this->last_status = array(
-			'processed' => $processed,
-			'error_message' => $error,
-			'error_count' => $error_count,
 			'body' => $body,
-			'data' => $this->get_data(false),
 		);
 
 		$this->post_process();
@@ -216,7 +180,6 @@ class Form {
 
 		foreach ($data as $key => $value) {
 			$body = str_replace('{{' . $key . '}}', $value, $body);
-			$bcc = str_replace('{{' . $key . '}}', $value, $arg['bcc']);
 		}
 
 		$body = preg_replace('|{{[\w\-\+\&]+}}|u', '', $body);
@@ -231,7 +194,7 @@ class Form {
 			$header[] = 'Cc: ' . $arg['cc'];
 
 		if ($arg['bcc'])
-			$header[] = 'Bcc: ' . $bcc;
+			$header[] = 'Bcc: ' . $arg['bcc'];
 
 		if ($arg['reply'])
 			$header[] = 'Reply-To: ' . $arg['reply'];
@@ -246,8 +209,58 @@ class Form {
 		else
 			$mail_to = $data[$arg['to']];
 
-		return true;
-		//return @mb_send_mail($mail_to, $arg['subject'], $body, $header);
+		$result = @mb_send_mail($mail_to, $arg['subject'], $body, $header);
+
+		/* auto_reply */
+		if ($this->config['auto_reply']) {
+			if (!$arg || !isset($arg['auto_from'], $arg['auto_subject'], $arg['auto_body']))
+				return;
+
+			$auto_mail_from = $arg['auto_from'];
+
+			if (preg_match('|^(.+?) <(.+?)>$|u', $auto_mail_from, $m)) {
+				$m[1] = mb_encode_mimeheader($m[1]);
+				$arg['auto_from'] = $m[2];
+				$auto_mail_from = "{$m[1]} <{$m[2]}>";
+			}
+
+			$auto_body = $arg['auto_body'];
+
+			foreach ($data as $key => $value) {
+				$auto_body = str_replace('{{' . $key . '}}', $value, $auto_body);
+				$arg['auto_to'] = str_replace('{{' . $key . '}}', $value, $arg['auto_to']);
+			}
+
+			$auto_body = preg_replace('|{{[\w\-\+\&]+}}|u', '', $auto_body);
+			$auto_body = trim($auto_body);
+			$auto_body = strip_tags($auto_body);
+			$auto_body = wordwrap($auto_body, 70);
+
+			$auto_header = array();
+			$auto_header[] = 'From: ' . $auto_mail_from;
+
+			if ($arg['auto_cc'])
+				$auto_header[] = 'Cc: ' . $arg['auto_cc'];
+
+			if ($arg['auto_bcc'])
+				$auto_header[] = 'Bcc: ' . $arg['auto_bcc'];
+
+			if ($arg['auto_reply'])
+				$auto_header[] = 'Reply-To: ' . $arg['auto_reply'];
+
+			$auto_header = array_map(array(&$this, 'remove_line_feeds'), $auto_header);
+			$auto_header = implode("\n", $auto_header);
+
+			if (!$arg['auto_to'])
+				$auto_mail_to = $arg['auto_from'];
+			elseif (strpos($arg['auto_to'], '@'))
+				$auto_mail_to = $arg['auto_to'];
+			else
+				$auto_mail_to = $data[$arg['auto_to']];
+
+			$result = @mb_send_mail($auto_mail_to, $arg['auto_subject'], $auto_body, $auto_header);
+		}
+		return $result;
 	}
 
 	private function remove_line_feeds($str) {
@@ -654,11 +667,11 @@ class Form_Html {
 			echo $this->builder('input', array(
 				'type'  => $info['type'],
 				'name'  => $info['name'],
-				'id'    => $info['name'] . '-' . $i,
+				'id'    => $info['id'] . '-' . $i,
 				'checked' => (isset($info['default']) && $i === $info['default']),
 				'value' => $i
 			) + $attrs);
-			echo '<label for="'.$info['name'] . '-' . $i.'">', $info['option'][$i];
+			echo '<label for="'.$info['id'] . '-' . $i.'">', $info['option'][$i];
 			echo '</label></li>';
 		}
 	}

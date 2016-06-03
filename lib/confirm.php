@@ -4,7 +4,6 @@ $cf = new Form(array(
 		'prefix' => 'cf',
 		//'ajax'   => true,
 		//'mail'   => true,
-		'confirm' => true,
 		'nonce'  => '5cv3wx7|hu-OJl4q',
 ));
 
@@ -36,15 +35,13 @@ $cf->add('message')->maxlen(2000);
 
 /*  Confirm
 -----------------------------------------------*/
-$cf->confirm(array(
+$cf->submit(array(
 	'body' => '
 お名前: {{name}}
 メールアドレス: {{email}}
 ご希望のメニュー: {{menu&}}
-作りたいサイトの種類:
-{{kind+}}
-ご要望・ご質問など:
-{{message}}
+作りたいサイトの種類: {{kind+}}
+ご要望・ご質問など: {{message}}
 ',
 ));
 ?>

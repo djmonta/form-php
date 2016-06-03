@@ -4,7 +4,7 @@ $mail = new Form(array(
 		'prefix' => 'mail',
 		//'ajax'   => true,
 		'mail'   => true,
-		'confirm' => false,
+		'auto_reply' => true,
 		'nonce'  => 'wF)3QdE8N8jowLDU',
 ));
 
@@ -18,7 +18,7 @@ $mail->add('menu&')->set_option(array(
 	'デザインパック',
 	'おまかせパック',
 	'相談して決めたい',
-))->set_val(0);
+));
 
 $mail->add('kind+')->set_option(array(
 	'個人事業',
@@ -37,10 +37,9 @@ $mail->add('message')->maxlen(2000);
 /*  Send Email
 -----------------------------------------------*/
 $mail->submit(array(
-		'from' => 'Contact <contact@single-web.site>',
-		'bcc' => '{{email}}',
-		'to' => 'sachiko.miyamoto@gmail.com',
-		'subject' => 'Contact',
+		'from' => 'シングルWebサイト <support@single-web.site>',
+		'to' => 'support@single-web.site',
+		'subject' => '【シングルWebサイト】お問い合わせ',
 		'body' => '
 ----------------------------------------
 日時: {{DATE}} {{TIME}}
@@ -57,6 +56,28 @@ $mail->submit(array(
 ご要望・ご質問など:
 {{message}}
 ----------------------------------------
+',
+		'auto_from' => 'シングルWebサイト <support@single-web.site>',
+		'auto_to' => '{{email}}',
+		'auto_subject' => '【シングルWebサイト】ありがとうございます',
+		'auto_body' => '
+{{name}} 様
+
+シングルWebサイトにお問い合わせいただき、誠にありがとうございます。
+ご記入いただいた内容を確認いたしましたら、あらためて担当者よりご連絡させていただきます。
+
+よろしくお願いいたします。
+────────────────────────────────────
+このメールに心当たりの無い場合は、お手数ですが
+下記連絡先までお問い合わせください。
+
+この度はお申し込み重ねてお礼申し上げます。
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+　　iWac.jp株式会社
+　　http://www.iwac.jp/
+　　support@single-web.site
+　　04-7157-1893
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ',
 ));
 ?>
