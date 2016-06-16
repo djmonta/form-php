@@ -294,6 +294,7 @@ h1 {
 	padding: 0 20px;
 	text-align: left;
 	text-shadow: 1px 1px 1px #1e1e1e;
+	-webkit-transform: rotate(-8deg);
 	transform: rotate(-8deg);
 }
 .catch .title {
@@ -364,6 +365,7 @@ h1 {
 .deg8 {
 	font-size: 55px;
 	vertical-align: top;
+	-webkit-transform: rotate(8deg);
 	transform: rotate(8deg);
 }
 .contents3-head .deg8 {
@@ -418,6 +420,7 @@ h1 {
 	font-size: 55px;
 	margin: 55px 0;
 	vertical-align: top;
+	-webkit-transform: rotate(-8deg);
 	transform: rotate(-8deg);
 	width: 73%;
 }
@@ -484,7 +487,7 @@ h1 {
 	background-size: 100% 100%;
 	color: #434343;
 	margin: 0 auto 20px;
-	padding: 30px 0 0 20px;
+	padding: 20px 0 0 20px;
 	height: 98px;
 	text-align: center;
 	max-width: 966px;
@@ -622,7 +625,7 @@ h1 {
 	font-size: 24px;
 	margin: 0;
 }
-.contact_form input[type="text"], .contact_form input[type="email"], .contact_form textarea {
+.contact_form input[type="text"], .contact_form input[type="email"], .contact_form input[type=tel], .contact_form textarea, .contact_form select {
 	width: 100%;
 }
 .contact_form input[type="radio"] {
@@ -710,6 +713,11 @@ h1 {
 #confirm .hidden_form {
 	display: none;
 }
+#confirm .submit_button {
+	background: #ea7a60;
+	color: #fff;
+	font-weight: bold;
+}
 
 
 /* footer */
@@ -720,7 +728,7 @@ h1 {
 .social {
 	border-radius: 50%;
 	display: inline-block;
-	font-size: 36px;
+	font-size: 26px;
 	width: 60px;
 	height: 60px;
 	text-align: center;
@@ -732,7 +740,8 @@ h1 {
 	color: #fff;
 	display: block;
 	text-decoration: none;
-	margin-top: 10px;
+	width: 100%;
+	padding: 25% 0;
 }
 .fb {
 	background: #315096;
@@ -742,7 +751,15 @@ h1 {
 }
 .copy {
 	color: #fff;
-	margin: 40px 0 0;
+	margin: 30px 0 0;
+}
+.who {
+	color: #fff;
+	font-size: 14px;
+}
+.who a {
+	color: #fff;
+	text-decoration: none;
 }
 
 #pagetop {
@@ -858,20 +875,15 @@ h1 {
 		width: 400px;
 	}
 	.social {
-		font-size: 30px;
+		font-size: 20px;
 		width: 40px;
 		height: 40px;
 	}
 	.social a {
-		margin-top: 3px;
+
 	}
 }
 @media (max-width: 48em) {
 
 }
-@media screen and (max-width: 767px) {
-	.pcfixed { display: none;}
-	#contents1,#contents2,#contents3,#contents4,#contents5 {
-		padding-top: 120px;
-	}
-}
+

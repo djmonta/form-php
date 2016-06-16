@@ -1,11 +1,10 @@
 <?php
 require_once 'Form.php';
 $mail = new Form(array(
-		'prefix' => 'mail',
-		//'ajax'   => true,
-		'mail'   => true,
-		'auto_reply' => true,
-		'nonce'  => 'wF)3QdE8N8jowLDU',
+	'prefix' => 'mail', // 変更しないでください。変更する場合は、JavaScript も変更しないと動きません
+	'mail'   => true, // メールを送信する
+	'auto_reply' => true, // 自動返信メールを送る
+	'nonce'  => 'wF)3QdE8N8jowLDU', // Secret
 ));
 
 /*  Validation Rules
@@ -14,13 +13,18 @@ $mail->add('name', true)->maxlen(50);
 
 $mail->add('email', true)->type('email');
 
+$mail->add('phone', true)->format('kana', 'nas')->format('phone')->type('tel');
+
+$mail->add('zip')->format('kana', 'nas');
+$mail->add('address');
+
 $mail->add('menu&')->set_option(array(
 	'デザインパック',
 	'おまかせパック',
 	'相談して決めたい',
 ));
 
-$mail->add('kind+')->set_option(array(
+$mail->add('kind&')->set_option(array(
 	'個人事業',
 	'個人商店',
 	'クリニック・調剤薬局',
@@ -30,6 +34,11 @@ $mail->add('kind+')->set_option(array(
 	'採用ページ',
 	'政治家のページ',
 	'その他',
+));
+
+$mail->add('option+')->set_option(array(
+	'SSLお問い合わせフォーム',
+	'ドメイン・サーバーをご自身でご用意する',
 ));
 
 $mail->add('message')->maxlen(2000);
@@ -48,10 +57,17 @@ $mail->submit(array(
 ----------------------------------------
 メールアドレス: {{email}}
 ----------------------------------------
+電話番号: {{phone}}
+----------------------------------------
+ご住所: {{zip}} {{address}}
+----------------------------------------
 ご希望のメニュー: {{menu&}}
 ----------------------------------------
 作りたいサイトの種類:
-{{kind+}}
+{{kind&}}
+----------------------------------------
+オプション:
+{{option+}}
 ----------------------------------------
 ご要望・ご質問など:
 {{message}}

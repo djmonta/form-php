@@ -81,6 +81,9 @@ class Form {
 			$body = $arg['body'];
 			$data = $this->get_data(true);
 
+			$data['DATE'] = date($this->config['date_format']);
+			$data['TIME'] = date($this->config['time_format']);
+
 			foreach ($data as $key => $value) {
 				$body = str_replace('{{' . $key . '}}', $value, $body);
 			}
@@ -128,9 +131,11 @@ class Form {
 				$res = array();
 
 				foreach ($validator->value as $val) {
-					// $res[] = $validator->meta['option'][$val - 1];
-					$res[] = $validator->meta['option'][$val];
+					$res[] = $validator->meta['option'][$val - 1];
+					// $res[] = $validator->meta['option'][$val];
 				}
+
+				unset($res[0]);
 
 				if ($flatten) {
 					$res = implode("\n", $res);
@@ -140,8 +145,8 @@ class Form {
 				}
 			} elseif (isset($validator->meta['option'])) {
 				if($flatten) {
-				// $data[$name] = $validator->meta['option'][$validator->value - 1];
-					$data[$name] = $validator->meta['option'][$validator->value];
+					$data[$name] = $validator->meta['option'][$validator->value - 1];
+					// $data[$name] = $validator->meta['option'][$validator->value];
 				} else {
 					$data[$name] = $validator->value;
 				}
@@ -528,8 +533,8 @@ class Form_Validator {
 		if (function_exists($filter)) {
 			$res = call_user_func_array($filter, $arg);
 
-			if ($change)
-				$this->value = $res;
+			// if ($change)
+			$this->value = $res;
 
 			return $res;
 		}
@@ -662,6 +667,12 @@ class Form_Html {
 	public function option($name, $attrs = array()) {
 		$info = $this->get_info($name);
 
+		echo $this->builder('input', array(
+			'type'  => 'hidden',
+			'name'  => $info['name'],
+			'value' => 0,
+		) + $attrs);
+
 		for ($i = 0, $len = sizeof($info['option']); $i < $len; $i++) {
 			echo '<li>';
 			echo $this->builder('input', array(
@@ -669,9 +680,9 @@ class Form_Html {
 				'name'  => $info['name'],
 				'id'    => $info['id'] . '-' . $i,
 				'checked' => (isset($info['default']) && $i === $info['default']),
-				'value' => $i
+				'value' => $i + 1
 			) + $attrs);
-			echo '<label for="'.$info['id'] . '-' . $i.'">', $info['option'][$i];
+			echo '<label for="'.$info['id'] . '-' . $i .'">', $info['option'][$i];
 			echo '</label></li>';
 		}
 	}
@@ -762,4 +773,11 @@ function validation_filter_datetime($call, $val, $format = '') {
 
 	if ('format' == $call)
 		return $p;
+}
+
+function validation_filter_phone($call, $val) {
+	if ('format' == $call)
+		return str_replace(array('-','(',')'), '', $val);
+
+	return true;
 }
