@@ -533,8 +533,8 @@ class Form_Validator {
 		if (function_exists($filter)) {
 			$res = call_user_func_array($filter, $arg);
 
-			// if ($change)
-			$this->value = $res;
+			if ($call === 'format')
+				$this->value = $res;
 
 			return $res;
 		}
@@ -559,7 +559,8 @@ class Form_Validator {
 			} else {
 				$_arg = isset($arg) ? $arg : func_get_args();
 
-				if (false === $this->_filter('filter', $rule, $_arg))
+				//if (false === $this->_filter('filter', $rule, $_arg))
+				if (false === $this->_func_call('filter', $rule, $_arg))
 					$this->reject('invalid');
 			}
 		} else { // regexp
