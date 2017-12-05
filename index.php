@@ -53,17 +53,17 @@ include_once 'lib/mail.php';
 						<form id="mail" method="post">
 							<div class="hidden_form">
 								<?php
-								$mail->html->text('name');
-								$mail->html->text('email');
-								$mail->html->text('phone');
-								$mail->html->text('zip');
-								$mail->html->text('address');
-								$mail->html->option('menu&');
-								$mail->html->select('kind&');
-								$mail->html->option('option+');
-								$mail->html->textarea('message');
-								$mail->html->nonce();
-								?>
+                                $mail->html->text('name');
+                                $mail->html->text('email');
+                                $mail->html->text('phone');
+                                $mail->html->text('zip');
+                                $mail->html->text('address');
+                                $mail->html->option('menu&');
+                                $mail->html->select('kind&');
+                                $mail->html->option('option+');
+                                $mail->html->textarea('message');
+                                $mail->html->nonce();
+                                ?>
 							</div>
 							<button class="pure-button back-button" data-dismiss="modal" aria-hidden="true">フォームに戻る</button>
 							<button type="submit" class="pure-button submit_button">送信</button>
