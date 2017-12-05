@@ -1,11 +1,12 @@
 <?php
+
 require_once 'Form.php';
-$mail = new Form(array(
-	'prefix' => 'mail', // 変更しないでください。変更する場合は、JavaScript も変更しないと動きません
-	'mail'   => true, // メールを送信する
-	'auto_reply' => true, // 自動返信メールを送る
-	'nonce'  => 'wF)3QdE8N8jowLDU', // Secret
-));
+$mail = new Form([
+    'prefix'     => 'mail', // 変更しないでください。変更する場合は、JavaScript も変更しないと動きません
+    'mail'       => true, // メールを送信する
+    'auto_reply' => true, // 自動返信メールを送る
+    'nonce'      => 'wF)3QdE8N8jowLDU', // Secret
+]);
 
 /*  Validation Rules
 -----------------------------------------------*/
@@ -18,38 +19,38 @@ $mail->add('phone', true)->format('kana', 'nas')->format('phone')->type('tel');
 $mail->add('zip')->format('kana', 'nas');
 $mail->add('address');
 
-$mail->add('menu&')->set_option(array(
-	'デザインパック',
-	'おまかせパック',
-	'相談して決めたい',
-));
+$mail->add('menu&')->set_option([
+    'デザインパック',
+    'おまかせパック',
+    '相談して決めたい',
+]);
 
-$mail->add('kind&')->set_option(array(
-	'個人事業',
-	'個人商店',
-	'クリニック・調剤薬局',
-	'ランディングページ',
-	'イベント',
-	'キャンペーンページ',
-	'採用ページ',
-	'政治家のページ',
-	'その他',
-));
+$mail->add('kind&')->set_option([
+    '個人事業',
+    '個人商店',
+    'クリニック・調剤薬局',
+    'ランディングページ',
+    'イベント',
+    'キャンペーンページ',
+    '採用ページ',
+    '政治家のページ',
+    'その他',
+]);
 
-$mail->add('option+')->set_option(array(
-	'SSLお問い合わせフォーム',
-	'ドメイン・サーバーをご自身でご用意する',
-));
+$mail->add('option+')->set_option([
+    'SSLお問い合わせフォーム',
+    'ドメイン・サーバーをご自身でご用意する',
+]);
 
 $mail->add('message')->maxlen(2000);
 
 /*  Send Email
 -----------------------------------------------*/
-$mail->submit(array(
-		'from' => 'シングルWebサイト <support@single-web.site>',
-		'to' => 'support@single-web.site',
-		'subject' => '【シングルWebサイト】お問い合わせ',
-		'body' => '
+$mail->submit([
+        'from'    => 'シングルWebサイト <support@single-web.site>',
+        'to'      => 'support@single-web.site',
+        'subject' => '【シングルWebサイト】お問い合わせ',
+        'body'    => '
 ----------------------------------------
 日時: {{DATE}} {{TIME}}
 ----------------------------------------
@@ -73,10 +74,10 @@ $mail->submit(array(
 {{message}}
 ----------------------------------------
 ',
-		'auto_from' => 'シングルWebサイト <support@single-web.site>',
-		'auto_to' => '{{email}}',
-		'auto_subject' => '【シングルWebサイト】ありがとうございます',
-		'auto_body' => '
+        'auto_from'    => 'シングルWebサイト <support@single-web.site>',
+        'auto_to'      => '{{email}}',
+        'auto_subject' => '【シングルWebサイト】ありがとうございます',
+        'auto_body'    => '
 {{name}} 様
 
 シングルWebサイトにお問い合わせいただき、誠にありがとうございます。
@@ -95,5 +96,4 @@ $mail->submit(array(
 　　04-7157-1893
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ',
-));
-?>
+]);
